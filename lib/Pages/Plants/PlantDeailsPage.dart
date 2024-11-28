@@ -22,10 +22,10 @@ class _PlantDetailsPageState extends State<PlantDetailsPage> {
     _generatePlantDescription();
   }
 
-Map<String, dynamic>? _getMostProbablePlant(List<dynamic> apiData) {
-  if (apiData.isEmpty) return null;
+Map<String, dynamic>? _getMostProbablePlant(dynamic apiData) {
+  if (apiData is! List || apiData.isEmpty) return null;
 
-  // Mapear la lista de datos en mapas de tipo `Map<String, dynamic>`
+  // Convertir cada elemento en un mapa si es necesario
   final suggestions = apiData.map<Map<String, dynamic>>((item) {
     if (item is Map) {
       return item.map<String, dynamic>(
@@ -41,7 +41,16 @@ Map<String, dynamic>? _getMostProbablePlant(List<dynamic> apiData) {
 }
 
 Future<void> _generatePlantDescription() async {
-  final apiData = widget.plant['apiData'] ?? {};
+  final apiData = widget.plant['apiData'];
+
+  // Verificar que sea una lista válida
+  if (apiData is! List || apiData.isEmpty) {
+    setState(() {
+      _generatedDescription = "No se encontró información sobre la planta.";
+    });
+    return;
+  }
+
   final mostProbablePlant = _getMostProbablePlant(apiData);
 
   if (mostProbablePlant == null) {
@@ -89,6 +98,7 @@ Future<void> _generatePlantDescription() async {
 }
 
 
+
   String _generateContextPrompt(Map<String, dynamic> plantData) {
     final name = plantData['name'] ?? "Desconocido";
     final probability = (plantData['probability'] ?? 0.0) * 100;
@@ -104,110 +114,110 @@ Describe de manera general dónde se descubrió esta planta, su importancia bot�
 """;
   }
 
+@override
+Widget build(BuildContext context) {
+  final apiData = widget.plant['apiData'];
+  final mostProbablePlant = apiData is List ? _getMostProbablePlant(apiData) : null;
 
-  @override
-  Widget build(BuildContext context) {
-    final apiData = widget.plant['apiData'] ?? {};
-    final mostProbablePlant = _getMostProbablePlant(apiData);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.plant['name'] ?? "Detalles de la Planta"),
-        backgroundColor: const Color(0xFF4CAF50),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.plant['imageUrl'] != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  widget.plant['imageUrl'],
-                  height: 300,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(widget.plant['name'] ?? "Detalles de la Planta"),
+      backgroundColor: const Color(0xFF4CAF50),
+    ),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.plant['imageUrl'] != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                widget.plant['imageUrl'],
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
-            const SizedBox(height: 20),
+            ),
+          const SizedBox(height: 20),
 
-            Text(
-              widget.plant['name'] ?? "Nombre desconocido",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
+          Text(
+            widget.plant['name'] ?? "Nombre desconocido",
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
 
-            Text(
-              'Fecha de obtención: ${widget.plant['obtainedDate'] ?? "No registrada"}',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 20),
+          Text(
+            'Fecha de obtención: ${widget.plant['obtainedDate'] ?? "No registrada"}',
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
 
-            const Text(
-              'Descripción general:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              _generatedDescription,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
+          const Text(
+            'Descripción general:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _generatedDescription,
+            style: const TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
 
-            const Text(
-              'Clasificación detallada:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            if (mostProbablePlant != null)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mostProbablePlant['name'] ?? "Especie desconocida",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
+          const Text(
+            'Clasificación detallada:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          if (mostProbablePlant != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  mostProbablePlant['name'] ?? "Especie desconocida",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (mostProbablePlant['similar_images'] != null)
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: mostProbablePlant['similar_images'].length,
+                      itemBuilder: (context, index) {
+                        final image = mostProbablePlant['similar_images'][index];
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              image['url'] ?? '',
+                              width: 150,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.broken_image);
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  if (mostProbablePlant['similar_images'] != null)
-                    SizedBox(
-                      height: 200,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: mostProbablePlant['similar_images'].length,
-                        itemBuilder: (context, index) {
-                          final image = mostProbablePlant['similar_images'][index];
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                image['url'] ?? '',
-                                width: 150,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.broken_image);
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                ],
-              )
-            else
-              const Text(
-                "No se encontraron datos detallados.",
-                style: TextStyle(fontSize: 16, color: Colors.redAccent),
-              ),
-          ],
-        ),
+              ],
+            )
+          else
+            const Text(
+              "No se encontraron datos detallados.",
+              style: TextStyle(fontSize: 16, color: Colors.redAccent),
+            ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }

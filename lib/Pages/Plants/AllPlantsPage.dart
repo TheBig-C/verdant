@@ -25,7 +25,10 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
   }
 
   Stream<QuerySnapshot> _getUserPlants() {
-    return _firestore.collection('plants').where('userId', isEqualTo: _userId).snapshots();
+    return _firestore
+        .collection('plants')
+        .where('userId', isEqualTo: _userId)
+        .snapshots();
   }
 
   @override
@@ -34,9 +37,13 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center, // Esto centra el contenido en el AppBar
+          mainAxisAlignment:
+              MainAxisAlignment.center, // Esto centra el contenido en el AppBar
           children: [
-            Image.asset('assets/images/LogoSecundario.png',height: 50,),
+            Image.asset(
+              'assets/images/LogoSecundario.png',
+              height: 50,
+            ),
           ],
         ),
         actions: [
@@ -58,9 +65,9 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
         child: Column(
           children: [
             // Parte superior con detalles de la planta seleccionada
-            if (_selectedPlant != null) 
+            if (_selectedPlant != null)
               //buildPlantDetails(_selectedPlant!),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
             Text(
               DateFormat('dd MMM, yyyy').format(DateTime.now()),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -80,7 +87,8 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
                       stream: _getUserPlants(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
 
                         final plants = snapshot.data!.docs;
@@ -92,7 +100,8 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
                         }
 
                         return GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
@@ -153,9 +162,13 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
   Widget buildPlantThumbnail(QueryDocumentSnapshot plant) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedPlant = plant;
-        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                PlantDetailsPage(plant: plant.data() as Map<String, dynamic>),
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -168,5 +181,4 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
       ),
     );
   }
-
 }

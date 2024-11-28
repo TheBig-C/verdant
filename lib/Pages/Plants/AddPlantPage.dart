@@ -21,7 +21,7 @@ class _AddPlantPageState extends State<AddPlantPage> {
   final _additionalInfoController = TextEditingController();
   final _obtainedDateController = TextEditingController();
   final firestore = FirebaseFirestore.instance;
-
+  bool isLoading = false;
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -84,55 +84,48 @@ class _AddPlantPageState extends State<AddPlantPage> {
 
 Future<void> _savePlant() async {
   if (_image == null || _nameController.text.isEmpty || _obtainedDateController.text.isEmpty) {
-    print('Faltan campos obligatorios o imagen');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Por favor completa todos los campos obligatorios.")),
+    );
     return;
   }
 
-  // Mostrar indicador de carga
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => Center(child: CircularProgressIndicator()),
-  );
+  setState(() {
+    isLoading = true;
+  });
 
   try {
-    // Obtener el usuario actual
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       throw Exception("El usuario no está autenticado");
     }
 
     // Identificar planta usando la API
-    final speciesSuggestions = await _identifyPlantSpecies(_image!);
+    final plantResponse = await _identifyPlantSpecies(_image!);
 
     // Subir imagen a ImgBB
     final imageUrl = await _uploadImageToImgBB();
     if (imageUrl == null) {
-      print('Error al subir la imagen a ImgBB');
-      Navigator.pop(context); // Cerrar diálogo de carga
-      return;
+      throw Exception('Error al subir la imagen a ImgBB');
     }
 
     // Crear objeto planta
     final plant = {
       "name": _nameController.text,
-      "species": speciesSuggestions, // Guardar todas las especies sugeridas
-      "description": "", // Por ahora vacío
       "imageUrl": imageUrl,
-      "additionalInfo": _additionalInfoController.text,
       "obtainedDate": _obtainedDateController.text,
-      "userId": user.uid, // Agregar el ID del usuario
+      "additionalInfo": _additionalInfoController.text,
+      "userId": user.uid,
+      "apiData": plantResponse, // Guardamos la respuesta completa de la API
     };
 
     // Guardar en Firebase Firestore
     await firestore.collection('plants').add(plant);
+
     print('Planta guardada exitosamente');
 
-    // Cerrar diálogo de carga
-    Navigator.pop(context);
-
-    // Ir a la pantalla de detalles
-    Navigator.push(
+    // Navegar a detalles de la planta
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => PlantDetailsPage(plant: plant),
@@ -140,9 +133,16 @@ Future<void> _savePlant() async {
     );
   } catch (e) {
     print('Error al guardar la planta: $e');
-    Navigator.pop(context); // Cerrar diálogo de carga
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error al guardar la planta: ${e.toString()}')),
+    );
+  } finally {
+    setState(() {
+      isLoading = false;
+    });
   }
 }
+
 
 
   Future<String?> _uploadImageToImgBB() async {

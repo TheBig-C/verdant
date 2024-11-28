@@ -279,39 +279,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 10),
 
-                // Detalles de Trefle (si existen)
-                if (plantData['trefleData'] != null) ...[
-                  const Text(
-                    'Detalles de la planta:',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  if (plantData['trefleData']['family'] != null)
-                    Text('Familia: ${plantData['trefleData']['family']}',
-                        style: const TextStyle(fontSize: 14)),
-                  if (plantData['trefleData']['genus'] != null)
-                    Text('Género: ${plantData['trefleData']['genus']}',
-                        style: const TextStyle(fontSize: 14)),
-                  if (plantData['trefleData']['common_name'] != null)
-                    Text('Nombre común: ${plantData['trefleData']['common_name']}',
-                        style: const TextStyle(fontSize: 14)),
-                  if (plantData['trefleData']['edible_part'] != null)
-                    Text(
-                        'Partes comestibles: ${plantData['trefleData']['edible_part'].join(", ")}',
-                        style: const TextStyle(fontSize: 14)),
-                  const SizedBox(height: 20),
-                  if (plantData['trefleData']['vegetation_type'] != null)
-                    Text(
-                        'Tipo de vegetación: ${plantData['trefleData']['vegetation_type']}',
-                        style: const TextStyle(fontSize: 14)),
-                  if (plantData['trefleData']['duration'] != null)
-                    Text('Duración: ${plantData['trefleData']['duration']}',
-                        style: const TextStyle(fontSize: 14)),
-                ] else
-                  const Text(
-                    "No se encontraron detalles adicionales.",
-                    style: TextStyle(fontSize: 14, color: AppColors.principalGreen),
-                  ),
+               
               ],
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:verdant/Pages/Plants/PlantDeailsPage.dart';
+import 'package:verdant/Pages/Plants/AllPlantsPage.dart';
 import 'package:verdant/Pages/widgets/drawer_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:verdant/Tema/AppColors.dart';
@@ -17,6 +18,7 @@ class _HomePageState extends State<HomePage> {
 
   late String _userId;
   QueryDocumentSnapshot? _selectedPlant;
+   int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -120,12 +122,38 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex, 
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          if (index == 0) { 
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AllPlantsPage()),
+            );
+          }
+          if (index == 1) { 
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AllPlantsPage()),
+            );
+          }
+          if (index == 2) { 
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AllPlantsPage()),
+            );
+          }
+          
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.eco), label: ''),
         ],
       ),
+
     );
   }
 

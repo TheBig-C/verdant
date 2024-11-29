@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
       // Determinar la pantalla inicial
       home: const AuthWrapper(),
       routes: {
-        '/login': (context) => const LoginView(),
-        '/signup': (context) => const SignUpPage(),
+        '/login': (context) =>  LoginView(),
+        '/signup': (context) =>  SignUpPage(),
         '/home': (context) =>  HomePage(),
         '/add-plant': (context) => AddPlantPage(),
 
@@ -55,7 +55,7 @@ class AuthWrapper extends StatelessWidget {
     if (user != null) {
       return  HomePage();
     } else {
-      return const LoginView();
+      return  LoginView();
     }
   }
 }

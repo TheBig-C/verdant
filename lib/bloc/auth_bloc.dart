@@ -24,7 +24,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthSuccess());
         }
       } catch (e) {
-        emit(AuthFailure('Error al iniciar sesión. Verifica tus credenciales.'));
+        emit(AuthFailure('Error al iniciar sesión. Verifica tus credenciales.')
+            .copyWith(message: 'Detalles: ${e.toString()}')); // Uso de copyWith
       }
     });
 
@@ -62,7 +63,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthSuccess());
         }
       } catch (e) {
-        emit(AuthFailure('Error al registrar usuario.'));
+        emit(AuthFailure('Error al registrar usuario.')
+            .copyWith(message: 'Detalles: ${e.toString()}')); // Uso de copyWith
       }
     });
   }

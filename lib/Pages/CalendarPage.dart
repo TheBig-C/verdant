@@ -89,15 +89,7 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.darkGreen,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/LogoSecundario.png', height: 50),
-          ],
-        ),
-      ),
+      
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         

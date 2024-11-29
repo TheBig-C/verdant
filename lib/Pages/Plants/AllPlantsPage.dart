@@ -6,7 +6,12 @@ import 'package:verdant/Pages/widgets/drawer_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:verdant/Tema/AppColors.dart';
 
+import 'package:verdant/Pages/home_page.dart';
+import 'package:verdant/Pages/CalendarPage.dart';
+
 class AllPlantsPage extends StatefulWidget {
+  const AllPlantsPage({super.key});
+
   @override
   _AllPlantsPageState createState() => _AllPlantsPageState();
 }
@@ -14,7 +19,7 @@ class AllPlantsPage extends StatefulWidget {
 class _AllPlantsPageState extends State<AllPlantsPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  int _selectedIndex = 2; 
   late String _userId;
   QueryDocumentSnapshot? _selectedPlant;
 
@@ -39,11 +44,11 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
             Image.asset('assets/images/LogoSecundario.png',height: 50,),
           ],
         ),
-        actions: [
+        actions: const [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: Row(
-              children: const [
+              children: [
                 Icon(Icons.whatshot, color: Colors.white),
                 SizedBox(width: 5),
                 Text('12', style: TextStyle(color: Colors.white)),
@@ -120,6 +125,31 @@ class _AllPlantsPageState extends State<AllPlantsPage> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex, 
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          if (index == 0) { 
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          }
+          if (index == 1) { 
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CalendarPage()),
+            );
+          }
+          if (index == 2) { 
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AllPlantsPage()),
+            );
+          }
+          
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),

@@ -88,8 +88,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     onTap: pickImage,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: const AssetImage('assets/images/default_profile.jpg')
-                            
+                      backgroundImage: profileImage != null
+                          ? FileImage(profileImage!)
+                          : const AssetImage('assets/images/default_profile.jpg')
+                              as ImageProvider,
+                      child: profileImage == null
+                          ? const Icon(
+                              Icons.camera_alt,
+                              size: 30,
+                            )
+                          : null,
                     ),
                   ),
                 ),

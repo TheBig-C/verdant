@@ -6,8 +6,11 @@ import 'package:verdant/Pages/Plants/AllPlantsPage.dart';
 import 'package:verdant/Pages/widgets/drawer_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:verdant/Tema/AppColors.dart';
+import 'package:verdant/Pages/CalendarPage.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -41,11 +44,11 @@ class _HomePageState extends State<HomePage> {
             Image.asset('assets/images/LogoPrincipal.png',height: 50,),
           ],
         ),
-        actions: [
+        actions: const [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: Row(
-              children: const [
+              children: [
                 Icon(Icons.whatshot, color: Colors.white),
                 SizedBox(width: 5),
                 Text('12', style: TextStyle(color: Colors.white)),
@@ -130,13 +133,13 @@ class _HomePageState extends State<HomePage> {
           if (index == 0) { 
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AllPlantsPage()),
+              MaterialPageRoute(builder: (context) => HomePage()),
             );
           }
           if (index == 1) { 
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AllPlantsPage()),
+              MaterialPageRoute(builder: (context) => CalendarPage()),
             );
           }
           if (index == 2) { 
@@ -207,7 +210,7 @@ class _HomePageState extends State<HomePage> {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 12, 
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -268,9 +271,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 20),
 
-                Text(
+                const Text(
                   'Información adicional:',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 10),
                 Text(

@@ -7,7 +7,7 @@ import 'package:verdant/pages/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:verdant/Tema/AppColors.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.black),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.green, // Color de fondo del AppBar
+          backgroundColor: AppColors.principalGreen, // Color de fondo del AppBar
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 20,

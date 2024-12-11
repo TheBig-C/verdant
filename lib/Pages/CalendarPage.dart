@@ -99,7 +99,7 @@ class _CalendarPageState extends State<CalendarPage> {
             Container(
               decoration: BoxDecoration(
                 color: AppColors.principalGreen,  // Color de fondo
-                borderRadius: BorderRadius.circular(12.0),  // Border radius
+                borderRadius: BorderRadius.circular(12.0), 
               ),
               
               child: TableCalendar(

@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
-            blurRadius: 12,
+            blurRadius: 12, 
             offset: const Offset(0, 4),
           ),
         ],
@@ -127,19 +127,46 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(30),
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
+        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16.0),
-            child: Image.network(
-              plantData['imageUrl'] ?? '',
-              height: 220,
-              width: 180,
-              fit: BoxFit.cover,
-            ),
+          Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter, 
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Image.network(
+                  plantData['imageUrl'] ?? '',
+                  height: 220,
+                  width: 180,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: -20, 
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: AppColors.darkGreen,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    plantData['name'] ?? 'Unnamed Plant',
+                    style: const TextStyle(
+                      fontSize: 16, 
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white, 
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
+
+          const SizedBox(width: 16), 
+
+          Expanded( 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -153,6 +180,7 @@ class _HomePageState extends State<HomePage> {
                   style: const TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
                 ),
                 const SizedBox(height: 20),
+
                 const Text(
                   'Información adicional:',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -162,6 +190,9 @@ class _HomePageState extends State<HomePage> {
                   plantData['additionalInfo'] ?? "No disponible",
                   style: const TextStyle(fontSize: 14),
                 ),
+                const SizedBox(height: 10),
+
+
               ],
             ),
           ),

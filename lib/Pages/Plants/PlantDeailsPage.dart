@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:verdant/Tema/AppColors.dart';
 class PlantDetailsPage extends StatefulWidget {
   final Map<String, dynamic> plant;
 
@@ -123,7 +123,7 @@ Describe de manera general dónde se descubrió esta planta, su importancia bot�
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.plant['name'] ?? "Detalles de la Planta"),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: AppColors.principalGreen,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

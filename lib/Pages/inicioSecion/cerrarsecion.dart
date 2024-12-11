@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:verdant/bloc/auth_bloc.dart';
-import 'package:verdant/bloc/auth_event.dart';
-import 'package:verdant/bloc/auth_state.dart';
+import 'package:verdant/bloc/Inicio_secion_bloc/auth_bloc.dart';
+import 'package:verdant/bloc/Inicio_secion_bloc/auth_event.dart';
+import 'package:verdant/bloc/Inicio_secion_bloc/auth_state.dart';
 
 class LoginView extends StatelessWidget {
   final emailController = TextEditingController();

@@ -109,95 +109,118 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+Widget buildPlantDetails(QueryDocumentSnapshot plant) {
+  final plantData = plant.data() as Map<String, dynamic>;
 
-  Widget buildPlantDetails(QueryDocumentSnapshot plant) {
-    final plantData = plant.data() as Map<String, dynamic>;
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 12, 
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(30),
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.topCenter, 
+  // Función para obtener la especie más probable
+  Map<String, dynamic>? getMostProbablePlant(dynamic apiData) {
+    if (apiData is! List || apiData.isEmpty) return null;
+
+    final suggestions = apiData.map<Map<String, dynamic>>((item) {
+      if (item is Map) {
+        return item.map<String, dynamic>(
+            (key, value) => MapEntry(key.toString(), value));
+      }
+      return {};
+    }).toList();
+
+    suggestions.sort(
+        (a, b) => (b['probability'] ?? 0.0).compareTo(a['probability'] ?? 0.0));
+
+    return suggestions.isNotEmpty ? suggestions.first : null;
+  }
+
+  // Obtener los datos de la API y procesar la especie más probable
+  final apiData = plantData['apiData'];
+  final mostProbablePlant = getMostProbablePlant(apiData);
+
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    padding: const EdgeInsets.all(30),
+    margin: const EdgeInsets.symmetric(horizontal: 10),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.topCenter,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Image.network(
+                plantData['imageUrl'] ?? '',
+                height: 220,
+                width: 180,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              top: -20,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+                decoration: BoxDecoration(
+                  color: AppColors.darkGreen,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  plantData['name'] ?? 'Unnamed Plant',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Image.network(
-                  plantData['imageUrl'] ?? '',
-                  height: 220,
-                  width: 180,
-                  fit: BoxFit.cover,
-                ),
+              Text(
+                'Fecha de obtención: ${plantData['obtainedDate'] ?? "No registrada"}',
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
               ),
-              Positioned(
-                top: -20, 
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: AppColors.darkGreen,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    plantData['name'] ?? 'Unnamed Plant',
-                    style: const TextStyle(
-                      fontSize: 16, 
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white, 
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(width: 16), 
-
-          Expanded( 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              const SizedBox(height: 8),
+             
+              if (mostProbablePlant != null) ...[
                 Text(
-                  'Fecha de obtención: ${plantData['obtainedDate'] ?? "No registrada"}',
-                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  'Especie: ${mostProbablePlant['name'] ?? "No disponible"}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Especie: ${plantData['species'] ?? "No disponible"}',
-                  style: const TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
-                ),
-                const SizedBox(height: 20),
-
-                const Text(
-                  'Información adicional:',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  plantData['additionalInfo'] ?? "No disponible",
-                  style: const TextStyle(fontSize: 14),
-                ),
-                const SizedBox(height: 10),
-
-
               ],
-            ),
+              const Text(
+                'Información adicional:',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                plantData['additionalInfo'] ?? "No disponible",
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 10),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
 }
